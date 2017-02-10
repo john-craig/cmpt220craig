@@ -6,9 +6,9 @@ public class problem5_5{
 		System.out.println("Kilograms   Pounds | Pounds     Kilograms");
 		for(int i=0; i<100; i++){
 			int kg = (i * 2) + 1;
-			double conLbs = kg * 2.2;
+			double conLbs = kg * 2.2; // JA: The correct conversion is 2.20462
 			int lbs = (i * 5) + 20;
-			double conKg = lbs * .45;
+			double conKg = lbs * .45; // JA: The correct conversion is 0.453592 Kilogram
 			
 			if(kg<10){
 				System.out.print(kg + "           " + conLbs);

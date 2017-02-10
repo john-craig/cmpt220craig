@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+// JA: You should add comments to your code
 public class problem5_1{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
@@ -28,7 +29,7 @@ public class problem5_1{
 				positives++;
 				average+=Character.getNumericValue(list.charAt(i));
 			}
-			average = total / (positives + negatives);
+			average = total / (positives + negatives);  // JA: This will be an integer operation, which is wrong. YOu need to force it to be double.
 		}
 		
 		if(!empty){
