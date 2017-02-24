@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+// JA: Always comment your code.
 public class problem7_10{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
@@ -11,7 +12,9 @@ public class problem7_10{
 			numbers[i] = input.nextDouble();
 		}
 
-		System.out.println("The smallest number is " + numbers[indexOfSmallestElement(numbers)]);
+		System.out.println("The smallest number is " + numbers[indexOfSmallestElement(numbers)]); 
+		// JA: You calculated the right thing, but printed the wrong number. 
+		// JA: You had to print indexOfSmallestElement(numbers)
 	}
 	
 	public static int indexOfSmallestElement(double[] array){

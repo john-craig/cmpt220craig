@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+
+// JA: Always add comments to your code
 public class problem7_11{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
@@ -32,8 +34,8 @@ public class problem7_11{
 
 		ave = 0;
 
-		for(int i=0;i<x.length;i++){ave+=x[i];}
-		ave = ave / x.length - 1;
+		for(int i=0;i<x.length;i++){ave+=x[i];} 
+		ave = ave / x.length - 1; // JA: You need to add parenthesis to the lower part of the equation (x.length - 1)
 
 		return Math.sqrt(ave);
 	}

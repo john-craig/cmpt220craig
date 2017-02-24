@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+// JA: Always add comments to your code
 public class problem7_19{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
@@ -22,7 +23,7 @@ public class problem7_19{
 		boolean isSorted = false;
 
 		for(int i=1;i<=list.length-1;i++){
-			isSorted = list[i-1] < list[i];
+			isSorted = list[i-1] < list[i]; // JA: You need to use <= because the same number could be more than once
 
 			if(!isSorted){break;}
 		}

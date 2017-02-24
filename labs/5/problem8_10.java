@@ -1,5 +1,8 @@
 import java.util.Scanner;
 
+
+// JA : Always add comments to your code
+// JA: This does not compile.
 public class problem8_10{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
@@ -9,7 +12,7 @@ public class problem8_10{
 		for(int i = 0;i<4;i++){
 			System.out.println();
 			for(int j = 0;j<4;j++){
-				matrix[i][j] = (Math.random() * 2);
+				matrix[i][j] = (Math.random() * 2); // JA: You have to explicitely cast to int. 
 				System.out.print(matrix[i][j]);
 			}
 		}
@@ -43,6 +46,6 @@ public class problem8_10{
 				}
 			}
 
-			return newMatrix[]
+			return newMatrix[] 
 	}
 }

@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+// JA: Always add comments to your code
 public class problem8_5{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
@@ -22,6 +23,7 @@ public class problem8_5{
 
 		double[][] matrixC = addMatrix(matrixA, matrixB);
 
+		// JA: Part of the exercise was to print all the matrices
 		for(int i = 0;i<3;i++){
 			System.out.println();
 			for(int j=0;j<3;j++){

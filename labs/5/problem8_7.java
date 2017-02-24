@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+// JA: Always add comments to your code
 public class problem8_7{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
@@ -23,7 +24,7 @@ public class problem8_7{
 				if(distanceBetweenPoints(pointA, pointB)<distance){distance = distanceBetweenPoints(pointA, pointB);}
 			}
 		}
-		if(distance < Double.100){return distance;}
+		if(distance < Double.100){return distance;} // JA: Were you trying to cast it to a double?
 		else{return -1;}
 	}
 	
