@@ -6,7 +6,8 @@ public class problem10_11{
 		
 		Circle2D cl = new Circle2D(2, 2, 5.5);
 		System.out.println("Area: " + cl.getArea() + " Perimeter: " + cl.getPerimeter());
-		System.out.println("" + cl.contains(new Circle2D(4,5,10.5)) + " " + cl.overlaps(new Circle2D(3,5,2.3)));
+		System.out.println(cl.contains(3,3) + " " + cl.contains(new Circle2D(4,5,10.5)) + " " + cl.overlaps(new Circle2D(3,5,2.3)));
+		// JA: Missed the contains (3,3)
 	}
 }
 
@@ -32,18 +33,20 @@ class Circle2D{
 	public boolean contains(double x, double y){ //Determines if a point is within the circle by making certain it's within the diameter of the diameter of the circle
 		boolean inside = true;
 		
-		for(int i = 0;i<360;i++){
+		//for(int i = 0;i<360;i++){
 			
-			double pointA = (this.x + this.radius) * Math.cos(Math.toRadians(i));
-			double pointB = (this.y + this.radius) * Math.sin(Math.toRadians(i));
+			//double pointA = (this.x + this.radius) * Math.cos(Math.toRadians(i));
+			//double pointB = (this.y + this.radius) * Math.sin(Math.toRadians(i));
 			
-			if((i <= 90 && i > 0) && (x > pointA || y > pointB)){inside = false;}
-			if((i <= 180 && i > 90) && (x < pointA || y > pointB)){inside = false;}
-			if((i <= 270 && i > 180) && (x < pointA || y < pointB)){inside = false;}
-			if((i <= 360 && i > 270) && (x > pointA || y < pointB)){inside = false;}
+			//if((i <= 90 && i > 0) && (x > pointA || y > pointB)){inside = false;}
+			//if((i <= 180 && i > 90) && (x < pointA || y > pointB)){inside = false;}
+			//if((i <= 270 && i > 180) && (x < pointA || y < pointB)){inside = false;}
+			//if((i <= 360 && i > 270) && (x > pointA || y < pointB)){inside = false;}
 		
-			if(!inside){break;}
-		}
+			//if(!inside){break;}
+		//}
+		double d = distance(x, y, this.x, this.y) ; // JA: This is simpler
+        inside = d <= radius;
 	
 		return inside;
 	}
@@ -66,6 +69,10 @@ class Circle2D{
 		
 		return overlaps;
 	}
+
+	 private static double distance(double x1, double y1, double x2, double y2) {
+		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	 }
 	
 	public double getX(){return x;}
 	public double getY(){return y;}

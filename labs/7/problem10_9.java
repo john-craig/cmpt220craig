@@ -9,14 +9,14 @@ public class problem10_9{
 		course.addStudent("Jim");
 		course.addStudent("Billy");
 		course.addStudent("Lily");
-		course.dropStudent("Billy")
+		course.dropStudent("Billy"); // JA: Missing ;
 		
 		String[] n = course.getStudents();
 		for(int i = 0;i<n.length;i++){System.out.println(n[i] + " ");}
 	}
 }
 
-public class Course{
+class Course{ // JA: cannot be public because it's in the same file
 	private String courseName;
 	private String[] students = new String[100];
 	private int numberOfStudents;
@@ -25,11 +25,11 @@ public class Course{
 	
 	public void addStudent(String student){
 		if(numberOfStudents>=students.length){
-			int[] temp = new int[students.length * 2];
-			System.arraycopy(students, 0, temp 0, students.length);
-			students = temp;
+			String[] temp = new String[students.length * 2]; // JA: Should be String[] type
+			System.arraycopy(students, 0, temp, 0, students.length); // JA: Missing comma
+			students = temp; 
 		}
-		students[numberOfStudents] = students;
+		students[numberOfStudents] = student; // JA: student, not students
 		numberOfStudents++;
 	}
 	
