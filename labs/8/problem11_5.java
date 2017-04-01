@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+// JA: No code to test this class
 public class problem11_5{
 	public static void main(String[] args) {
 		
@@ -7,7 +8,7 @@ public class problem11_5{
 }
 
 
-public class Course{
+class Course{ // JA
 	private String courseName;
 	private ArrayList<String> students;
 	
@@ -25,5 +26,5 @@ public class Course{
 	
 	public String getCourseName(){return courseName;}
 	
-	public void clear(){students = new ArrayList<String>()}
+	public void clear(){students = new ArrayList<String>();} // JA
 }

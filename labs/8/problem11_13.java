@@ -14,6 +14,7 @@ public class problem11_13{
 		for(int i=0;i<tester.size();i++){System.out.print(tester.get(i) + " ");}
 	}
 
+	// JA: A better approach is to recreate the list without duplications
 	public static void removeDuplicate(ArrayList<Integer> list){
 		ArrayList<Integer> temp = new ArrayList<Integer>();
 		

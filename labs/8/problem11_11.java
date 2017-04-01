@@ -16,22 +16,26 @@ public class problem11_11{
 		for(int i = 0;i<tester.size();i++){System.out.print(tester.get(i) + " ");}
 	}
 
+	
 	public static void sort(ArrayList<Integer> list){
-		ArrayList<Integer> temp = new ArrayList<Integer>();
+		//ArrayList<Integer> temp = new ArrayList<Integer>();
 		
-		temp.add(list.get(0));
+		//temp.add(list.get(0));
 		
-		for(int i = 1;i<list.size();i++){
+		for(int i = 0;i<list.size() - 1;i++){ // JA
 			Integer n = list.get(i);
 			int position = 0;
 			
-			for(int j=0;j<temp.size();j++){
-				if(n > temp.get(j)){position++;}
+			for(int j=i+1;j<list.size();j++){ // JA
+				if( list.get(i) > list.get(j)){position++; // JA
+					Integer temp = list.get(i); // JA
+					list.set(i, list.get(j)); // JA
+					list.set(j, temp); // JA
+					//list.add(n, position); // JA
+				}
 			}
-			
-			list.add(n, position);
 		}
 		
-		list = temp;
+//		list = temp; // JA
 	}
 }

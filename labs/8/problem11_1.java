@@ -18,7 +18,7 @@ public class problem11_1{
 		System.out.print("Is the triangle filled in? Y/N: ");
 		String filled = input.next();
 		
-		if(filled == "Y"){triangle.setFilled(true);}
+		if(filled.equals("Y")){triangle.setFilled(true);} // JA
 		else{triangle.setFilled(false);}
 		
 		System.out.println(triangle + " perimeter = " + triangle.getPerimeter() + " area = " + triangle.getArea() + " color = " + triangle.getColor() + " is filled = " + triangle.isFilled());

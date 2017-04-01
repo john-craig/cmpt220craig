@@ -54,6 +54,8 @@ class Account{
 }
 
 class SavingsAccount extends Account{
+	public SavingsAccount() {} // JA
+
 	public void withdraw(double amt){
 		if(this.getBalance() - amt < 0){System.out.println("This transaction would overdraw your account");}
 		else{this.setBalance(this.getBalance() - amt);}
@@ -66,6 +68,8 @@ class SavingsAccount extends Account{
 
 class CheckingAccount extends Account{
 	private double overdraft;
+
+	public CheckingAccount(){} // JA
 	
 	public CheckingAccount(double overdraft){
 		super();
