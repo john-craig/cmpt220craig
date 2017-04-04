@@ -1,54 +1,228 @@
-import java.util.Scanner;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Scene;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import java.util.ArrayList;
 
-public class Dungeon_Crawler{
+public class Dungeon_Crawler extends Application{
+	
 	public static void main(String[] args) {
-		boolean gameOver = false;
-		Player player = new Player();
-		Level level = new Level();
+		Application.launch(args);
+	}
+	
+	@Override public void start(Stage primaryStage){
+		Scene scene = new Scene(Utility.setupTilePane(new Image("Images/background_tile.png"), 16, 24), 1200, 800);
+		scene.setOnKeyPressed(e ->{
+			if(e.getCode() == KeyCode.ESCAPE){primaryStage.close();}
+		});
 		
-		while(!gameOver){
-			player.playerUI();
+		Game game = new Game(scene);
+		
+		primaryStage.setTitle("Dungeon Crawler");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+}
+
+class Game{
+	private Scene scene;
+	private Level level;
+	private Floor currentFloor;
+	private int[] currentPosition;
+	private int[] newPosition;
+	private int currentFloorNumber;
+	private Player player;
+	private boolean gameOver;
+	
+	public Game(Scene scene){
+		this.scene = scene;
+		gameOver = false;
+		level = new Level();
+		currentFloor = level.getFloor(0);
+		currentFloorNumber = 0;
+		currentPosition = currentFloor.getStart();
+		newPosition = currentPosition;
+		player = new Player();
+		this.setupScene(0);
+	}
+	
+	public void setupGame(){
+		player.setRoomPosition(currentPosition);
+		player.setRoom(currentFloor.getRoom(currentPosition[0], currentPosition[1]));
+		
+		this.setupScene(1);
+		
+		/*while(!gameOver){
+			newPosition = player.getPosition();
+			
+			if(currentFloorNumber != player.getFloor()){
+				if(player.getFloor() > 4){
+					level = new Level();
+					currentFloor = level.getFloor(0);
+					currentFloorNumber = 0;
+					player.setFloor(0);
+				}
+				else{
+					currentFloorNumber = player.getFloor();
+					currentFloor = level.getFloor(currentFloorNumber);
+				}
+			}
+			
+			if(currentPosition != newPosition){
+				if(currentPosition[0] != newPosition[0]){
+					currentPosition[0] = newPosition[0];
+					player.setRoom(currentFloor.getRoom(currentPosition[0],currentPosition[1]));
+				}
+				else{
+					currentPosition[1] = newPosition[1];
+					player.setRoom(currentFloor.getRoom(currentPosition[0],currentPosition[1]));
+				}
+			}
+			
+			gameOver = !player.getAlive();
+		}*/
+	}	
+	
+	public void progressGame(int n){
+		switch(n){
+			case 0:
+				this.setupScene(2);
+				break;
 		}
+	}
+	
+	public void setupScene(int n){
+		Pane pane = new Pane();
+		StackPane button1;
+		StackPane button2;
+		StackPane button3;
+		Image image = new Image("Images/background_tile.png");
+		Image image2 = new Image("Images/background_tile2.png");
+		
+		TilePane backgroundTop = Utility.setupTilePane(image, 3, 24);
+		backgroundTop.relocate(0,0);
+		
+		TilePane backgroundMid = Utility.setupTilePane(image2, 10, 24);
+		backgroundMid.relocate(0, 150);
+		
+		TilePane backgroundBottom = Utility.setupTilePane(image, 3, 24);
+		backgroundBottom.relocate(0, 650);
+		
+		pane.getChildren().addAll(backgroundTop, backgroundMid, backgroundBottom);
+		
+		switch(n){
+			case 0: 
+				button1 = Utility.setupButton("Start Game");
+				button1.relocate(550, 700);
+				button1.setOnMouseReleased(e -> {setupGame();});
+				pane.getChildren().add(button1);
+				break;
+			case 1:
+				for(int i = 0;i<3;i++){
+					ImageView scroll = Utility.setupImage("Images/Scroll.png");
+					scroll.setFitWidth(100);
+					scroll.setX(400 + (i * 150));
+					scroll.setY(258);
+					pane.getChildren().add(scroll);
+				}
+				
+				button1 = Utility.setupButton("Warrior");
+				button1.relocate(400, 450);
+				button1.setOnMouseReleased(e -> {
+					player.setType(0);
+					progressGame(0);
+				});
+				
+				button2 = Utility.setupButton("Rogue");
+				button2.setOnMouseReleased(e -> {
+					player.setType(1);
+					progressGame(0);
+				});
+				button2.relocate(550, 450);
+				
+				button3 = Utility.setupButton("Mage");
+				button3.setOnMouseReleased(e -> {
+					player.setType(2);
+					progressGame(0);
+				});
+				button3.relocate(700, 450);
+				
+				ImageView warriorImage = Utility.setupImage("Images/Warrior.png");
+				warriorImage.setFitWidth(100);
+				warriorImage.setX(400);
+				warriorImage.setY(250);
+				
+				ImageView rogueImage = Utility.setupImage("Images/Rogue.png");
+				rogueImage.setFitWidth(100);
+				rogueImage.setX(550);
+				rogueImage.setY(250);
+				
+				ImageView mageImage = Utility.setupImage("Images/Mage.png");
+				mageImage.setFitWidth(100);
+				mageImage.setX(700);
+				mageImage.setY(250);
+				
+				pane.getChildren().addAll(warriorImage, button1, rogueImage, button2, mageImage, button3);
+				break;
+			case 2:
+				button1 = Utility.setupButton("Check\n Equipment");
+				//button1.setOnMouseReleased();
+				button1.relocate(350, 700);
+				
+				button2 = Utility.setupButton("Check\n Inventory");
+				//button1.setOnMouseReleased();
+				button2.relocate(550, 700);
+				
+				button3 = Utility.setupButton("Check Status");
+				//button1.setOnMouseReleased();
+				button3.relocate(750, 700);
+				
+				ImageView setting = Utility.setupImage("Images/Room.png");
+				setting.setX(200);
+				setting.setY(150);
+				
+				scene.setOnKeyPressed(e -> {player.getCharacter().moveCharacter(e.getCode());});
+				
+				pane.getChildren().addAll(button1, button2, button3, setting, player.getCharacter().getActor());
+				break;
+		}
+		
+		scene.setRoot(pane);
 	}
 }
 
 class Player{
-	private Scanner input;
 	private Hero player;
 	private int floor;
-	private int[] position;
+	private int[] roomPosition;
+	private Room currentRoom;
 	
 	public Player(){
-		input = new Scanner(System.in);
 		floor = 0;
-		
-		System.out.println("What is your name, adventurer?");
-		System.out.print("-->");
-		
-		String name = input.next();
-		
-		System.out.println("Chose your class:\n\t1. Warrior\n\t2. Rogue\n\t3. Mage");
-		System.out.print("-->");
-		
-		int t = input.nextInt() - 1;
-		player = new Hero(t, 1);
-		player.setName(name);
+		roomPosition = new int[2];
+		String name = "Bob";
 	}
 	
-	public void playerUI(){
-		System.out.println("Select an action:\n\t1. Check Equipped\n\t2. Check Inventory\n\t3. Check Status\n\t4. Inspect Room");
-		System.out.print("-->");
-		choice = input.nextInt();
-			
-		switch(choice){
-			case 1: viewEquipped(); break;
-			case 2: viewInventory(); break;
-			case 3: viewStatus(); break;
-		}
-	}
-	
-	private void viewEquipped(){
+	/*private void viewEquipped(){
 		Item[] equipped = player.getEquipped();
 		int choice = -1;
 		
@@ -109,6 +283,12 @@ class Player{
 		input.next();
 	}
 	
+	private void inspectRoom(){
+		System.out.println(currentRoom.getDescription());
+		System.out.print("-->");
+		input.next();
+	}
+	
 	private void interactItem(Item n, int m){
 		int choice = -1;
 		
@@ -143,11 +323,19 @@ class Player{
 			System.out.print("-->");
 			choice = input.nextInt();
 		}
-	}
+	}*/
 	
-	public boolean getAlive(){return player.getAlive();}
+	public void setType(int type){player = new Hero(type, 1);}
 	
-	public void killPlayer(){player.damage(200);}
+	public int getFloor(){return floor;}
+	public void setFloor(int n){floor = n;}
+	
+	public int[] getRoomPosition(){return roomPosition;}
+	public void setRoomPosition(int[] n){roomPosition = n;}
+	
+	public void setRoom(Room room){currentRoom = room;}
+	
+	public Character getCharacter(){return player;}
 }
 
 class Character{
@@ -155,12 +343,16 @@ class Character{
 	protected int level;
 	protected int type;
 	protected int gold;
-	protected int hp[];
-	protected int mp[];
+	protected int[] hp;
+	protected int[] mp;
 	protected int stats[];
 	protected Item[] equipment;
 	protected ArrayList<Item> inventory;
 	protected ArrayList<Hero> allies;
+	protected int[] screenPosition;
+	protected int[] spriteDimensions;
+	protected ImageView spriteActor;
+	protected Image spriteSheet;
 	protected String name;
 
 	public Character(){
@@ -169,9 +361,62 @@ class Character{
 		mp = new int[3];
 		stats = new int[6];
 		equipment = new Item[10];
+		spriteDimensions = new int[2];
+		screenPosition = new int[2];
+		screenPosition[0] = 600;
+		screenPosition[1] = 400;
+		spriteActor = new ImageView();
 		inventory = new ArrayList<Item>();
 		allies = new ArrayList<Hero>();
 	}
+	
+	public void moveCharacter(KeyCode m){
+		double startTime = System.currentTimeMillis();
+		EventHandler<ActionEvent> walking = e-> {
+			int currentCycle = ((int)(System.currentTimeMillis() - startTime)/50) - 1;
+			if(currentCycle == 2 || currentCycle == 4){currentCycle = 0;}
+			if(currentCycle == 3){currentCycle = 2;}
+			int viewX = spriteDimensions[0] * currentCycle;
+			int viewY = 0;
+			int viewWidth = spriteDimensions[0];
+			int viewHeight = spriteDimensions[1];
+			
+			switch(m){
+				case UP: case W:
+					if(screenPosition[1] > 233){
+						screenPosition[1] -= 10;
+						spriteActor.setViewport(new Rectangle2D(viewX + (spriteDimensions[0] * 3), viewY, viewWidth, viewHeight));
+					}
+					break;
+				case DOWN: case S:
+					if(screenPosition[1] < (567 - (spriteDimensions[1] * 1.5))){
+						screenPosition[1] += 10;
+						spriteActor.setViewport(new Rectangle2D(viewX, viewY, viewWidth, viewHeight));
+					}
+					break;
+				case LEFT: case A:
+					if(screenPosition[0] > 283){
+						screenPosition[0] -= 10;
+						spriteActor.setViewport(new Rectangle2D(viewX, viewY + spriteDimensions[1], viewWidth, viewHeight));
+					}
+					break;
+				case RIGHT: case D:
+					if(screenPosition[0] < (917 - (spriteDimensions[0] * 1.5))){
+						screenPosition[0] += 10;
+						spriteActor.setViewport(new Rectangle2D(viewX + (spriteDimensions[0] * 3), viewY + spriteDimensions[1], viewWidth, viewHeight));
+					}
+					break;
+			
+			}
+			spriteActor.setX(screenPosition[0]);
+			spriteActor.setY(screenPosition[1]);
+		};
+		Timeline animation = new Timeline(new KeyFrame(Duration.millis(50), walking));
+		animation.setCycleCount(5);
+		animation.play();
+	}
+	
+	public ImageView getActor(){return spriteActor;}
 	
 	public String getName(){return name;}
 	public void setName(String name){this.name = name;}
@@ -188,6 +433,8 @@ class Character{
 		alive = hp[0] > 0;
 		return alive;
 	}
+	
+	public void kill(){hp[0] = 0;}
 	
 	public int[] getHP(){return hp;}
 	public void setHP(int[] n){hp = n;}
@@ -280,6 +527,7 @@ class Hero extends Character{
 		
 		switch(super.type){
 			case 0:
+				super.spriteSheet = new Image("Images/Warrior.png");
 				super.hp[2] = 12; //This sets the "base" HP
 				startingEquipment[0] = new Weapon(super.level, 2);
 				startingEquipment[2] = new Armor(super.level, 1, 2);
@@ -289,6 +537,7 @@ class Hero extends Character{
 				break;
 		
 			case 1:
+				super.spriteSheet = new Image("Images/Rogue.png");
 				super.hp[2] = 8; //This sets the "base" HP
 				startingEquipment[1] = new Weapon(super.level, 1);
 				startingEquipment[2] = new Armor(super.level, 0, 2);
@@ -296,6 +545,11 @@ class Hero extends Character{
 				break;
 			
 			case 2:
+				super.spriteDimensions[0] = 20;
+				super.spriteDimensions[1] = 57;
+				super.spriteSheet = new Image("Images/Sprites/Mage_Walk_Sprites.png");
+				super.spriteActor.setImage(spriteSheet);
+				super.spriteActor.setViewport(new Rectangle2D(super.spriteDimensions[0] * 0, super.spriteDimensions[1] * 0, super.spriteDimensions[0], super.spriteDimensions[1]));
 				super.hp[2] = 4; //This sets the "base" HP
 				super.mp[2] = 5; //This gives the mage Mana Points
 				super.mp[1] = mp[2] * level;
@@ -303,6 +557,8 @@ class Hero extends Character{
 				startingEquipment[8] = new Armor(super.level, -1, 8);
 				break;
 		}
+		super.spriteActor.setPreserveRatio(true);
+		super.spriteActor.setFitWidth(30);
 		super.hp[1] = hp[2] * level;
 		super.hp[0] = hp[1];
 		this.setEquipped(startingEquipment);
@@ -517,6 +773,7 @@ class Level{
 		floors[4] = new Floor(prevExit[0],prevExit[1],2);
 	}
 	
+	public Floor getFloor(int n){return floors[n];}
 	public Floor[] getFloors(){return floors;}
 }
 
@@ -599,35 +856,40 @@ class Floor{
 		for(int i=0;i<5;i++){
 			for(int j=0;j<5;j++){
 				switch(layout[i][j]){
-					case -1: rooms[i][j] = new Room(-1); break;
-					case 0: break;
-					case 1: if(n == 1){rooms[i][j] = new Room(1);} else{rooms[i][j] = new Room(0);} break;
-					case 2: rooms[i][j] = new Room(lastRoom); exit[0] = i; exit[1] = j; break;
+					case -1: rooms[i][j] = new Room(-1, i, j, layout); break;
+					case 0: rooms[i][j] = new Room(0, i, j, layout); break;
+					case 1: if(n == 1){rooms[i][j] = new Room(1, i, j, layout);} else{rooms[i][j] = new Room(0, i, j, layout);} break;
+					case 2: rooms[i][j] = new Room(lastRoom, i, j, layout); exit[0] = i; exit[1] = j; break;
 				}
-				rooms[i][j].setPos(i,j);
-				rooms[i][j].setLayout(layout);
 			}
 		}
 	}
 
-	int getType(){return type;}
-	int[] getStart(){return start;}
-	int[] getExit(){return exit;}
-	int[][] getLayout(){return layout;}
+	public Room getRoom(int x, int y){return rooms[x][y];}
+	
+	public int getType(){return type;}
+	public int[] getStart(){return start;}
+	public int[] getExit(){return exit;}
+	public int[][] getLayout(){return layout;}
 }
 
 class Room{
 	private int type; //-1 indicates a Start Room, which is always safe and always empty; 0 indicates a Hostile Room; 1 indicates a Friendly Room; 2 indicates an Exit Room; 3 indicates a Boss Room
 	private int subtype;
 	private int[] position;
+	private int[][] layout;
 	private String description;
 	private ArrayList<Character> characters;
+	private boolean[] availableDirections; //0 is North, 1 is West, 2 is South, 3 is East
 	
-	public Room(int n){
+	public Room(int n, int x, int y, int[][] layout){
 		type = n;
-		positioni = new int[2];
-		availableDirections = new boolean[4];
+		position = new int[2];
+		position[0] = x;
+		position[1] = y;
+		this.layout = layout;
 		characters = new ArrayList<Character>();
+		availableDirections = new boolean[4];
 		setupRoom();
 	}
 	
@@ -639,15 +901,24 @@ class Room{
 			case 1: subtype = Utility.random(3) - 1; break;
 		}
 		
-		description = Utility.getRoomDesc(type + 1, subtype);
-	}
-
-	public void setPos(int x, int y){
-		position[0] = x;
-		position[1] = y;
+		if(position[0] > 0){availableDirections[0] = layout[position[0] - 1][position[1]] == 1;}
+		else{availableDirections[0] = false;}
+		
+		if(position[0] < 4){availableDirections[2] = layout[position[0] + 1][position[1]] == 1;}
+		else{availableDirections[0] = false;}
+		
+		if(position[1] > 0){availableDirections[1] = layout[position[0]][position[1] - 1] == 1;}
+		else{availableDirections[0] = false;}
+		
+		if(position[1] < 4){availableDirections[3] = layout[position[0]][position[1] + 1] == 1;}
+		else{availableDirections[0] = false;}
+		
+		description = Utility.getRoomDesc(type + 1, subtype, availableDirections);
 	}
 	
 	public int getType(){return type;}
+	
+	public String getDescription(){return description;}
 }
 
 class Utility{//The Utility class largely exists for the sole purpose of storing miscellaneas data which would be cumbersome to actually store in the other classes themselves
@@ -682,6 +953,65 @@ class Utility{//The Utility class largely exists for the sole purpose of storing
 	
 	public static String getCharacterName(int a, int b){return characterTypes[a][b];}
 	public static String getItemName(int a, int b){return itemTypes[a][b];}
-	public static String getRoomDesc(int a, int b){return roomDescriptions[a][b];}
+	public static String getRoomDesc(int a, int b, boolean[] c){
+		String output = roomDescriptions[a][b] + " with ";
+		
+		if(c[0]){output += " a door to the North";}
+		if(c[1]){output += " a door to the West";}
+		if(c[2]){output += " a door to the South";}
+		if(c[3]){output += " a door to the East";}
+		
+		return output;
+		}
 	public static String getStatName(int a){return statName[a];}
+	
+	public static TilePane setupTilePane(Image image, int height, int width){
+		TilePane output = new TilePane();
+		output.setPrefWidth(width * image.getWidth());
+		output.setPrefHeight(height * image.getHeight());
+		
+		for(int i = 0;i<(height * width);i++){
+			ImageView bgImage = new ImageView();
+			bgImage.setImage(image);
+			bgImage.setCache(true);
+			bgImage.setSmooth(false);
+			output.getChildren().add(bgImage);
+		}
+		
+		return output;
+	}
+	
+	public static StackPane setupButton(String bLabel){
+		StackPane output = new StackPane();
+		
+		Text text = new Text(bLabel);
+		text.setTextAlignment(TextAlignment.CENTER);
+		
+		Image image = new Image("Images/button_background.png");
+		ImageView buttonBackground = new ImageView();
+		buttonBackground.setImage(image);
+		
+		output.getChildren().add(buttonBackground);
+		output.getChildren().add(text);
+		
+		return output;
+	}
+
+	public static ImageView setupImage(String directory){
+		ImageView output = new ImageView();
+		output.setImage(new Image(directory));
+		output.setCache(true);
+		output.setSmooth(false);
+		output.setPreserveRatio(true);
+		return output;
+	}
+	
+	public static ImageView setupImage(Image image){
+		ImageView output = new ImageView();
+		output.setImage(image);
+		output.setCache(true);
+		output.setSmooth(false);
+		output.setPreserveRatio(true);
+		return output;
+	}
 }
