@@ -107,6 +107,15 @@ class Game{
 			case 0:
 				this.setupScene(2);
 				break;
+			case 1:
+				this.setupScene(3);
+				break;
+			case 2:
+				this.setupScene(4);
+				break;
+			case 3:
+				this.setupScene(5);
+				break;
 		}
 	}
 	
@@ -185,15 +194,15 @@ class Game{
 				break;
 			case 2:
 				button1 = Utility.setupButton("Check\n Equipment");
-				//button1.setOnMouseReleased();
+				button1.setOnMouseReleased(e -> {progressGame(1);});
 				button1.relocate(350, 700);
 				
 				button2 = Utility.setupButton("Check\n Inventory");
-				//button1.setOnMouseReleased();
+				button1.setOnMouseReleased(e -> {progressGame(1);});
 				button2.relocate(550, 700);
 				
 				button3 = Utility.setupButton("Check Status");
-				//button1.setOnMouseReleased();
+				button1.setOnMouseReleased(e -> {progressGame(1);});
 				button3.relocate(750, 700);
 				
 				ImageView setting = Utility.setupImage("Images/Room.png");
@@ -203,6 +212,18 @@ class Game{
 				scene.setOnKeyPressed(e -> {player.getCharacter().moveCharacter(e.getCode());});
 				
 				pane.getChildren().addAll(button1, button2, button3, setting, player.getCharacter().getActor());
+				break;
+			case 3:
+				Pane equipmentModel = player.viewEquipped();
+				equipmentModel.relocate(300, 200);
+				
+				pane.getChildren().add(equipmentModel);
+				break;
+			case 4:
+				
+				break;
+			case 5:
+				
 				break;
 		}
 		
@@ -220,6 +241,36 @@ class Player{
 		floor = 0;
 		roomPosition = new int[2];
 		String name = "Bob";
+	}
+	
+	public Pane viewEquipped(){
+		Pane output = new Pane();
+		Item[] equipment = player.getEquipped();
+		
+		ImageView model = new ImageView();
+		switch(player.getType()){
+			case 0:
+				model = Utility.setupImage(new Image("Images/Warrior_Base.png"));
+				break;
+			case 1:
+				model = Utility.setupImage(new Image("Images/Rogue_Base.png"));
+				break;
+			case 2:
+				model = Utility.setupImage(new Image("Images/Mage_Base.png"));
+				break;
+		}
+		model.setFitWidth(200);
+		output.getChildren().add(model);
+		
+		for(int i = 0;i<equipment.length;i++){
+			if(equipment[i] != null){
+				ImageView item = Utility.setupImage(equipment[i].getImage());
+				item.setFitWidth(200);
+				output.getChildren().add(item);
+			}
+		}
+		
+		return output;
 	}
 	
 	/*private void viewEquipped(){
@@ -345,7 +396,7 @@ class Character{
 	protected int gold;
 	protected int[] hp;
 	protected int[] mp;
-	protected int stats[];
+	protected int[] stats;
 	protected Item[] equipment;
 	protected ArrayList<Item> inventory;
 	protected ArrayList<Hero> allies;
@@ -366,6 +417,7 @@ class Character{
 		screenPosition[0] = 600;
 		screenPosition[1] = 400;
 		spriteActor = new ImageView();
+		spriteActor.relocate(screenPosition[0],screenPosition[1]);
 		inventory = new ArrayList<Item>();
 		allies = new ArrayList<Hero>();
 	}
@@ -373,7 +425,7 @@ class Character{
 	public void moveCharacter(KeyCode m){
 		double startTime = System.currentTimeMillis();
 		EventHandler<ActionEvent> walking = e-> {
-			int currentCycle = ((int)(System.currentTimeMillis() - startTime)/50) - 1;
+			int currentCycle = ((int)(System.currentTimeMillis() - startTime)/100) - 1;
 			if(currentCycle == 2 || currentCycle == 4){currentCycle = 0;}
 			if(currentCycle == 3){currentCycle = 2;}
 			int viewX = spriteDimensions[0] * currentCycle;
@@ -384,34 +436,33 @@ class Character{
 			switch(m){
 				case UP: case W:
 					if(screenPosition[1] > 233){
-						screenPosition[1] -= 10;
+						screenPosition[1] -= 15;
 						spriteActor.setViewport(new Rectangle2D(viewX + (spriteDimensions[0] * 3), viewY, viewWidth, viewHeight));
 					}
 					break;
 				case DOWN: case S:
 					if(screenPosition[1] < (567 - (spriteDimensions[1] * 1.5))){
-						screenPosition[1] += 10;
+						screenPosition[1] += 15;
 						spriteActor.setViewport(new Rectangle2D(viewX, viewY, viewWidth, viewHeight));
 					}
 					break;
 				case LEFT: case A:
 					if(screenPosition[0] > 283){
-						screenPosition[0] -= 10;
+						screenPosition[0] -= 15;
 						spriteActor.setViewport(new Rectangle2D(viewX, viewY + spriteDimensions[1], viewWidth, viewHeight));
 					}
 					break;
 				case RIGHT: case D:
 					if(screenPosition[0] < (917 - (spriteDimensions[0] * 1.5))){
-						screenPosition[0] += 10;
+						screenPosition[0] += 15;
 						spriteActor.setViewport(new Rectangle2D(viewX + (spriteDimensions[0] * 3), viewY + spriteDimensions[1], viewWidth, viewHeight));
 					}
 					break;
 			
 			}
-			spriteActor.setX(screenPosition[0]);
-			spriteActor.setY(screenPosition[1]);
+			spriteActor.relocate(screenPosition[0], screenPosition[1]);
 		};
-		Timeline animation = new Timeline(new KeyFrame(Duration.millis(50), walking));
+		Timeline animation = new Timeline(new KeyFrame(Duration.millis(100), walking));
 		animation.setCycleCount(5);
 		animation.play();
 	}
@@ -426,6 +477,8 @@ class Character{
 	
 	public int[] getStats(){return stats;}
 	public int getStat(int n){return stats[n];}
+	
+	public int getType(){return type;}
 	
 	public int getGold(){return gold;}
 	
@@ -579,7 +632,7 @@ class Hero extends Character{
 	}
 }
 
-class Nonplayer extends Character{
+class Neutral extends Character{
 	
 	public Nonplayer(int type){
 		super.type = type;
@@ -600,23 +653,27 @@ class Item{
 	//Slot 0 and 1 are for handheld items; Slot 2 is for Boots, Slot 3 is for Leg Armor, Slot 4 is for Chest Armor,
 	//Slot 5 is for Shoulder Armor, Slot 6 is for Gauntlets, Slot 7 is for Helmets, Slot 8 is for Robes, Slot 9 is Misc.
 	protected int value;
+	protected Image image;
 
 	public Item(){
 		tier = 1;
 		setupItem(tier);
 		name = "Item";
+		image = new Image("Images/Blank.png");
 	}
 	
 	public Item(int tier){
 		this.tier = tier;
 		setupItem(tier);
 		name = "Item";
+		image = new Image("Images/Blank.png");
 	}
 	
 	public Item(int tier, String name){
 		this.tier = tier;
 		setupItem(tier);
 		this.name = name;
+		image = new Image("Images/Blank.png");
 	}
 	
 	private void setupItem(int tier){
@@ -626,15 +683,18 @@ class Item{
 	public int getSlot(){return slot;}
 	public int getValue(){return value;}
 	
+	public Image getImage(){return image;}
+	
 	public String toString(){return name;}
 	public String getDescription() {return name + "is a tier " + tier + " item worth " + value;}
 }
 
 class Weapon extends Item{
-	protected boolean twoHanded;
-	protected int type;
-	protected int damage;
-	protected int range;
+	private boolean twoHanded;
+	private int type;
+	private int damage;
+	private int range;
+	private Image model;
 	
 	public Weapon(int tier){
 		super(tier);
@@ -691,9 +751,9 @@ class Weapon extends Item{
 }
 
 class Armor extends Item{
-	protected int type;
-	protected int dodge;
-	protected int defense;
+	private int type;
+	private int dodge;
+	private int defense;
 	
 	public Armor(int tier){
 		super(tier);
@@ -878,7 +938,6 @@ class Room{
 	private int subtype;
 	private int[] position;
 	private int[][] layout;
-	private String description;
 	private ArrayList<Character> characters;
 	private boolean[] availableDirections; //0 is North, 1 is West, 2 is South, 3 is East
 	
@@ -933,13 +992,6 @@ class Utility{//The Utility class largely exists for the sole purpose of storing
 		{"Boots","Greaves","Chestplate","Pauldrons","Gauntlets","Helmet","Robe"},
 		{""}
 	};
-	private static String[][] roomDescriptions = {
-		{"Empty Room Starting Room"},
-		{"Empty Room","Room filled with Enemies","Room with a Trap"},
-		{"Empty Room","Merchant Room","Tavern Room"},
-		{"Empty Exit Room"},
-		{"Boss Room"}
-	};
 	
 	public static int random(int max){
 		int num = (int)(Math.random() * max) + 1;
@@ -953,16 +1005,6 @@ class Utility{//The Utility class largely exists for the sole purpose of storing
 	
 	public static String getCharacterName(int a, int b){return characterTypes[a][b];}
 	public static String getItemName(int a, int b){return itemTypes[a][b];}
-	public static String getRoomDesc(int a, int b, boolean[] c){
-		String output = roomDescriptions[a][b] + " with ";
-		
-		if(c[0]){output += " a door to the North";}
-		if(c[1]){output += " a door to the West";}
-		if(c[2]){output += " a door to the South";}
-		if(c[3]){output += " a door to the East";}
-		
-		return output;
-		}
 	public static String getStatName(int a){return statName[a];}
 	
 	public static TilePane setupTilePane(Image image, int height, int width){
