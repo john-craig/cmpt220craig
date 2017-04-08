@@ -13,18 +13,23 @@ public class problem12_13{
 		int words = 0;
 		int characters = 0;
 		
-		while(input.hasNext()){
-			lines++;
-			String currentLine = input.nextLine();
-			
-			for(int i = 0;i<currentLine.length;i++){
-				if((int)currentLine.charAt(i) == 1){
-					words++;
+		// JA
+		try{
+			Scanner input = new Scanner(file);
+			while(input.hasNext()){
+				lines++;
+				String currentLine = input.nextLine();
+				
+				for(int i = 0;i<currentLine.length();i++){ // JA
+					if((int)currentLine.charAt(i) == 1){
+						words++;
+					}
+					else{characters++;}
 				}
-				else{characters++;}
 			}
+			
+			System.out.println("File contains " + lines + " lines, " + words + " words, and " + characters + " characters");
+		} catch(Exception ex) {
 		}
-		
-		System.out.println("File contains " + lines + " lines, " + words + " words, and " + characters + " characters");
 	}
 }

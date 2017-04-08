@@ -12,12 +12,14 @@ public class problem12_11{
 		try{
 			Scanner input = new Scanner(file);
 			PrintWriter output = new PrintWriter(file);
-		){
+	// JA	{
 			while(input.hasNext()){
-				Strng s1 = input.nextLine();
-				String s2 = s1.replaceall(ars[0], "");
+				String s1 = input.nextLine(); // JA
+				String s2 = s1.replaceAll(args[0], ""); // JA
 				output.println(s2);
 			}
+		}
+		catch(Exception ex) {
 		}
 	}
 }

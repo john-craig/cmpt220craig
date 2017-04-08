@@ -3,7 +3,15 @@ import java.util.Scanner;
 public class problem12_5{
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
-		
+		try
+		{
+			new Triangle(3, 4, 8); // JA
+			
+		}
+		catch (IllegalTriangleException ex)
+		{
+			System.out.println(ex.getMessage()); //JA
+		}
 	}
 }
 
@@ -44,9 +52,9 @@ class Triangle extends GeometricObject{
 		side3 = 1.0;
 	}
 	
-	public Triangle(double s1, double s2, double s3){
+	public Triangle(double s1, double s2, double s3) throws IllegalTriangleException { // JA
 		if((s1 + s2 < s3) || (s1 + s3 < s2) || (s2 + s3 < s1)){
-			throw IllegalTriangleException(s1, s2, s2);
+			throw new IllegalTriangleException(s1, s2, s3); // JA
 		}
 		
 		side1 = s1;
