@@ -8,7 +8,7 @@ public class problem18_11{
 		System.out.prinlnt("Enter a number to be summed: ");
 		int x = input.nextInt();
 		
-		System.out.println("The sum of " + x + " is " + sumDigits(x);
+		System.out.println("The sum of " + x + " is " + sumDigits(x));
 	}
 	
 	public static int sumDigits(long n){

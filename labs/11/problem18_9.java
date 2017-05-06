@@ -8,7 +8,7 @@ public class problem18_9{
 		System.out.prinlnt("Enter a string to be reversed: ");
 		String x = input.next();
 		
-		System.out.println("The reverse of " + x + " is " + reverseDisplay(x);
+		System.out.println("The reverse of " + x + " is " + reverseDisplay(x));
 	}
 	
 	public static String reverseDisplay(String value){
